@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://orovanta.github.io/sitemap.xml
