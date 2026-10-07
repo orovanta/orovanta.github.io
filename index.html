@@ -41,8 +41,8 @@ body{
 ::selection{background:var(--teal);color:#04110e}
 ::-webkit-scrollbar{width:10px}
 ::-webkit-scrollbar-track{background:#05070b}
-::-webkit-scrollbar-thumb{background:#1c2430;border-radius:6px}
-::-webkit-scrollbar-thumb:hover{background:#2b3648}
+::-webkit-scrollbar-thumb{background:#232c3a;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#314052}
 a{color:inherit;text-decoration:none}
 img{max-width:100%}
 
@@ -285,7 +285,7 @@ h2.title .dim{color:var(--faint)}
   color:transparent;-webkit-text-stroke:1px rgba(233,237,242,.06);
   letter-spacing:.05em;pointer-events:none;
 }
-.std-list{margin-top:40px;display:flex;flex-direction:column;max-width:760px;position:relative}
+.std-list{margin-top:40px;display:flex;flex-direction:column;max-width:760px;position:relative;z-index:1}
 .std-row{
   display:grid;grid-template-columns:44px 1fr;gap:20px;align-items:start;
   padding:24px 0;border-top:1px solid var(--hair);
@@ -340,7 +340,25 @@ footer{
 .foot-base .disc{max-width:640px;line-height:1.9;letter-spacing:.06em}
 
 /* responsive */
+.menu-btn{display:none;background:none;border:1px solid var(--hair);border-radius:2px;width:42px;height:42px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0}
+.menu-btn span{display:block;width:18px;height:1.5px;background:var(--platinum);transition:all .3s}
+.mobile-menu{display:none}
 @media(max-width:960px){
+  .menu-btn{display:flex}
+  .menu-btn.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  .menu-btn.open span:nth-child(2){opacity:0}
+  .menu-btn.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  .mobile-menu{
+    display:flex;flex-direction:column;
+    position:fixed;top:74px;left:16px;right:16px;z-index:99;
+    background:rgba(6,9,14,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--hair);border-radius:6px;padding:10px 12px;
+    opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .3s;
+  }
+  .mobile-menu.open{opacity:1;visibility:visible;transform:none}
+  .mobile-menu a{font-family:var(--font-mono);font-size:12px;letter-spacing:.24em;color:var(--muted);padding:14px 10px;border-bottom:1px solid var(--hair)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:active{color:var(--teal)}
   .tools-grid{grid-template-columns:repeat(2,1fr)}
   .team-grid{grid-template-columns:1fr}
   .company-grid{grid-template-columns:1fr}
@@ -397,8 +415,16 @@ footer{
     <a class="nl" href="#standards">STANDARDS</a>
     <a class="nl" href="#team">TEAM</a>
     <a class="btn ghost" href="#contact">CONTACT</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#company">COMPANY</a>
+  <a href="#platform">PLATFORM</a>
+  <a href="#standards">STANDARDS</a>
+  <a href="#team">TEAM</a>
+  <a href="#contact">CONTACT</a>
+</div>
 
 <header class="hero" id="top">
   <canvas id="chartCanvas"></canvas>
@@ -640,6 +666,20 @@ setTimeout(() => document.getElementById('loader').classList.add('done'), 4000);
 /* ---------- nav scroll state ---------- */
 const nav = document.getElementById('nav');
 addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+/* ---------- mobile menu ---------- */
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  menuBtn.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileMenu.classList.remove('open');
+  menuBtn.classList.remove('open');
+  menuBtn.setAttribute('aria-label', 'Open menu');
+}));
 
 /* ---------- ticker: duplicate for seamless loop ---------- */
 const track = document.getElementById('tickerTrack');
